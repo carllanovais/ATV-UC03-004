@@ -1,0 +1,82 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Corpo da página */
+body {
+    background-color: #f0f4f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+}
+
+/* Título */
+h1 {
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Formulário */
+form {
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Resultado */
+h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+img {
+    margin-top: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+ 
+#error{
+    color: red;
+    font-style: italic;
+    margin-top: 10px;
+    text-align: center;
+    
+}
