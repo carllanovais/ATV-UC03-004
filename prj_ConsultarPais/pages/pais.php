@@ -1,82 +1,71 @@
 <?php
 $mensagem = "";
 $dados = [];
+$pais = filter_input(INPUT_GET, "paisBuscado", FILTER_SANITIZE_SPECIAL_CHARS);
 
-// Entrada
-$capital = filter_input(INPUT_GET, "capitalBuscada", FILTER_SANITIZE_SPECIAL_CHARS);
+if(isset($_GET['paisBuscado'])) {
+ 
+    $url = "https://restcountries.com/v3.1/name/{$pais}";
 
-if (!isset($capital) || strlen($capital) < 2) {
-    $mensagem = "Capital inválida!";
-} else {
-    $url = "https://restcountries.com/v3.1/capital/" . urlencode($capital);
+    $resposta = @file_get_contents($url);
 
-    $configuracoes = [
-        "http" => [
-            "method" => "GET",
-            "header" => "Content-Type: application/json"
-        ]
-    ];
-
-    $context = stream_context_create($configuracoes);
-    $response = file_get_contents($url, false, $context);
-
-    if ($response === false) {
-        $mensagem = "Erro ao acessar a API.";
+    if($resposta === FALSE) {
+        $mensagem = "País não encontrado ou erro na API.";
     } else {
-        $data = json_decode($response, true);
+        $resultado = json_decode($resposta, true);
+        $paisInfo = $resultado[0];
 
-        if (isset($data['status']) || empty($data)) {
-            $mensagem = "Capital não encontrada.";
-        } else {
-            $pais = $data[0];
-
-            $dados['nome'] = $pais['name']['common'] ?? '';
-            $dados['populacao'] = number_format($pais['population'] ?? 0);
-            $dados['regiao'] = $pais['region'] ?? '';
-            $dados['bandeira'] = $pais['flags']['png'] ?? '';
-        }
+        // Preenchendo os dados
+        $dados['nomeOficial'] = $paisInfo['translations']['por']['official'] ?? $paisInfo['name']['official'];
+        $dados['capital'] = $paisInfo['capital'][0] ?? 'N/A';
+        $dados['regiao'] = $paisInfo['region'] ?? 'N/A';
+        $dados['populacao'] = $paisInfo['population'] ?? 'N/A';
+        $dados['bandeira'] = $paisInfo['flags']['png'] ?? '';
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
-    <title>Resultado - País por Capital</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado - Consulta de País</title>
+    <link rel="stylesheet" href="./../css/style.css">
 </head>
+
 <body>
+    <h2>Informações sobre o país</h2>
 
-    <h2>Resultado da Busca</h2>
-
-    <div id="resultado">
+    <div id="pais-buscado">
         <span id="error"><?= $mensagem ?></span>
 
         <div>
-            <label>Nome do País:</label>
-            <input type="text" value="<?= $dados['nome'] ?? '' ?>" disabled>
+            <label>Nome Oficial: </label>
+            <input type="text" value="<?= isset($dados['nomeOficial']) ? $dados['nomeOficial'] : '' ?>" disabled>
         </div>
 
         <div>
-            <label>População:</label>
-            <input type="text" value="<?= $dados['populacao'] ?? '' ?>" disabled>
+            <label>Capital: </label>
+            <input type="text" value="<?= isset($dados['capital']) ? $dados['capital'] : ''?>" disabled>
         </div>
 
         <div>
-            <label>Região:</label>
-            <input type="text" value="<?= $dados['regiao'] ?? '' ?>" disabled>
+            <label>Região: </label>
+            <input type="text" value="<?= isset($dados['regiao']) ? $dados['regiao'] : '' ?>" disabled>
         </div>
 
         <div>
-            <label>Bandeira:</label><br>
-            <?php if (!empty($dados['bandeira'])): ?>
-                <img src="<?= $dados['bandeira'] ?>" alt="Bandeira de <?= $dados['nome'] ?>">
+            <label>População: </label>
+            <input type="text" value="<?= isset($dados['populacao']) ? number_format($dados['populacao'], 0, ',', '.') : '' ?>" disabled>
+        </div>
+
+        <div>
+            <label>Bandeira: </label>
+            <?php if(isset($dados['bandeira']) && $dados['bandeira'] != ''): ?>
+                <img src="<?= $dados['bandeira'] ?>" alt="Bandeira de <?= $dados['nomeOficial'] ?>" style="width:200px;">
             <?php endif; ?>
         </div>
     </div>
-
-    <br><a href="index.html"> Voltar</a>
-
 </body>
-</html>
