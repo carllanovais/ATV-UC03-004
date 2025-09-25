@@ -2,15 +2,16 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Buscar País pela Capital</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Consulta de Países</title>
+     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <h1>Buscar País pela Capital</h1>
-    <form action="buscar.php" method="GET">
-        <label for="capitalBuscada">Capital:</label>
-        <input type="text" name="capitalBuscada" id="capitalBuscada" required>
+    <h1>Consulta de Países</h1>
+    <form action="./pages/pais.php" >
+        <label for="nome">Nome do país:</label>
+        <input type="text" id="nome" name="paisBuscado" required>
         <button type="submit">Buscar</button>
     </form>
 </body>
 </html>
+
